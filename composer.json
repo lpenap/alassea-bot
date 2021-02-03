@@ -1,0 +1,18 @@
+{
+	"name" : "lpenap/alassea-bot",
+	"description" : "AlasseaBot ",
+	"keywords" : [
+		"discord",
+		"bot"
+	],
+	"type" : "project",
+    "require": {
+        "team-reflex/discord-php": "^5.1",
+        "php": "^7.4"
+    },
+	"autoload" : {
+		"psr-4" : {
+			"Alassea\\" : "src/Alassea/"
+		}
+	}
+}
