@@ -5,7 +5,7 @@ namespace Alassea;
 use Discord\Discord;
 
 class Alassea {
-	public const VERSION = "0.2";
+	public const VERSION = "0.3";
 	protected const CUSTOM_CMD_NAMESPACE = 'Alassea\\Commands\\Custom\\';
 	protected const CUSTOM_CMD_SUFIX = 'Command';
 	protected $restartCount;
