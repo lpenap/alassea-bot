@@ -67,9 +67,9 @@ The current features already implemented are:
 * Support for passing of parameters from discord to the custom commands (i.e. `,mycmd param1 param2`).
 * Support for custom commands with a three-stage loading phase: prepare(), run() and cleanup() to allow for more custom implementation of commands.
 * Access to the high level discord-php api.
-* A light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\System\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested.
+* A native php and light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\System\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested.
 #### Commands list
-* `,restart` : Will restart the bot on-the-fly (it will load new code added to it). It is not necesary to restart the command after adding new commands, it will load them dinamically.
+* `,restart` : Will restart the bot on-the-fly (it will load new code added to it). It is not necesary to restart the bot after adding new commands, it will load them dinamically.
 * `,hello` : Basic hello (world?) command.
 * `,echo` : Commad that will reply back with the received parameters.
 * `,info` : Prints an embed with some info from the bot (i.e. versions).
