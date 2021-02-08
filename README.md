@@ -18,9 +18,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/lpenap/alassea-bot">
+  <!-- <a href="https://github.com/lpenap/alassea-bot">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+  </a> -->
 
   <h3 align="center">AlasseaBot</h3>
 
@@ -136,15 +136,15 @@ Project Link: [https://github.com/lpenap/alassea-bot](https://github.com/lpenap/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/lpenap/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/lpenap/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/lpenap/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/lpenap/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/lpenap/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/lpenap/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/lpenap/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/lpenap/repo/issues
-[license-shield]: https://img.shields.io/github/license/lpenap/repo.svg?style=for-the-badge
-[license-url]: https://github.com/lpenap/repo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/lpenap/alassea-bot?style=for-the-badge
+[contributors-url]: https://github.com/lpenap/alassea-bot/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/lpenap/alassea-bot?style=for-the-badge
+[forks-url]: https://github.com/lpenap/alassea-bot/network/members
+[stars-shield]: https://img.shields.io/github/stars/lpenap/alassea-bot?style=for-the-badge
+[stars-url]: https://github.com/lpenap/alassea-bot/stargazers
+[issues-shield]: https://img.shields.io/github/issues/lpenap/alassea-bot?style=for-the-badge
+[issues-url]: https://github.com/lpenap/alassea-bot/issues
+[license-shield]: https://img.shields.io/github/license/lpenap/alassea-bot?style=for-the-badge
+[license-url]: https://github.com/lpenap/alassea-bot/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/lpenap
+[linkedin-url]: https://linkedin.com/in/luisaugustopena
