@@ -87,8 +87,9 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * composer: Install composer on your system (if you don't have it already). (Maybe I should add a `composer.phar` to the project
+* Add/create a configuration for a new App/Bot in Discord: https://discord.com/developers/applications . (you will need a valid bot token to configure AlasseaBot)
+* Create an environment variable called `ALASSEA_DISCORD_TOKEN` with your discord bot token. AlasseaBot will take the required token from there.
 
 ### Installation
 
