@@ -1,17 +1,3 @@
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Thanks again! Now go create something AMAZING! :D
-***
-***
-***
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** lpenap, alassea-bot, twitter_handle, email, AlasseaBot, Extensible General Purpose Discord Bot
--->
-
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -41,11 +27,7 @@
   <p align="center">
     Extensible General Purpose Discord Bot
     <br />
-    <a href="https://github.com/lpenap/alassea-bot"><strong>Explore the docs »</strong></a>
     <br />
-    <br />
-    <a href="https://github.com/lpenap/alassea-bot">View Demo</a>
-    ·
     <a href="https://github.com/lpenap/alassea-bot/issues">Report Bug</a>
     ·
     <a href="https://github.com/lpenap/alassea-bot/issues">Request Feature</a>
@@ -60,9 +42,6 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -72,11 +51,8 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
 
@@ -84,21 +60,23 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`lpenap`, `alassea-bot`, `twitter_handle`, `email`, `AlasseaBot`, `Extensible General Purpose Discord Bot`
-
-
-### Built With
-
-* []()
-* []()
-* []()
-
-
+AlasseaBot is an early attempt to provide an extensible general purpose discord bot that could be managed through commands. It can be extensible in the sense that new commands could be added without the need to modify the bot core.
+### Current State
+The current features already implemented are:
+* Easy way to add new commands: Just extend the provided abstract class, place your command in a specific folder and restart the bot. The command loader will detect the command received from discord (using a prefix, i.e. `,mycmd`) and will try to load a class with that name in the custom folder (i.e. `Commands\Custom\MycmdCommand`). For an easy example checkout the class `Commands\Custom\EchoCommand` or check `Commands\System\QodCommand` for a more complex example.
+* Support for passing of parameters from discord to the custom commands (i.e. `,mycmd param1 param2`).
+* Support for custom commands with a three-stage loading phase: prepare(), run() and cleanup() to allow for more custom implementation of commands.
+* Access to the high level discord-php api.
+* A light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\System\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested.
+#### Commands list
+* `,restart` : Will restart the bot on-the-fly (it will load new code added to it). It is not necesary to restart the command after adding new commands, it will load them dinamically.
+* `,hello` : Basic hello (world?) command.
+* `,echo` : Commad that will reply back with the received parameters.
+* `,info` : Prints an embed with some info from the bot (i.e. versions).
+* `,qod` : Quote of the day command to retrieve qod using the free `quotes.rest` API
+#### ToDo
+* Restrict commands by a sort-of `admin` role (so only admins could restart the bot for example).
+* Add out of the box support for custom auto reaction roles.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -108,10 +86,7 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* composer: Install composer on your system (if you don't have it already). (Maybe I should add a `composer.phar` to the project
 
 ### Installation
 
@@ -119,33 +94,25 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/lpenap/alassea-bot.git
    ```
-2. Install NPM packages
+2. Install composer packages
    ```sh
-   npm install
+   composer install
    ```
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/lpenap/alassea-bot/issues) for a list of proposed features (and known issues).
-
+Run from the cli and from the project folder (This is important since the restart command will work only if you start the bot with this):
+```sh
+php src/alassea-bot.php 0
+```
 
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Any contributions you make are **greatly appreciated**. Contribution can be in the form of a new core functionality or new custom commands that could make its way to become system commands.
+
+The project is currently using Eclipse PHP Convention (built in) and not the Zend or psr-2 convention (this is because this convention is similar to conventions from other language I regularly use. I can be convinced otherwise with a good argument... maybe.)
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -165,22 +132,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
-
 Project Link: [https://github.com/lpenap/alassea-bot](https://github.com/lpenap/alassea-bot)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-
-* []()
-* []()
-* []()
-
-
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
