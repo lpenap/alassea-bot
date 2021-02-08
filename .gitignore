@@ -1,3 +1,7 @@
+# custom
+src/alassea-db/
+
+# end of custom
 .metadata
 bin/
 tmp/

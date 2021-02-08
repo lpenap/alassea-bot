@@ -3,6 +3,7 @@
 namespace Alassea;
 
 use Discord\Discord;
+use Alassea\Database\Cache;
 
 class Alassea {
 	public const VERSION = "0.3";
@@ -14,6 +15,8 @@ class Alassea {
 	protected $prefix;
 	protected $startTime;
 	protected $cmdPaths;
+	protected $cache;
+	protected $basedir;
 	public function __construct($prefs) {
 		$this->setPrefs ( $prefs );
 
@@ -21,6 +24,7 @@ class Alassea {
 		$this->cmdPaths [] = $this::CUSTOM_CMD_NAMESPACE;
 		$this->cmdPaths [] = 'Alassea\\Commands\\System\\';
 
+		$this->cache = new Cache ( "cache", $this->basedir );
 		$this->startTime = time ();
 	}
 	protected function setPrefs($prefs) {
@@ -46,6 +50,12 @@ class Alassea {
 			$this->token = $prefs ['token'];
 		} else {
 			$this->token = '';
+		}
+
+		if (isset ( $prefs ['basedir'] )) {
+			$this->basedir = $prefs ['basedir'];
+		} else {
+			$this->basedir = __DIR__;
 		}
 	}
 	public function restart() {
@@ -107,5 +117,11 @@ class Alassea {
 	}
 	public function getUptime() {
 		return $this->startTime;
+	}
+	public function getCache() {
+		return $this->cache;
+	}
+	public function getBasedir() {
+		return $this->basedir;
 	}
 }
