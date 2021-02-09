@@ -65,7 +65,7 @@
 AlasseaBot is an early attempt to provide an extensible general purpose discord bot that could be managed through commands. It can be extensible in the sense that new commands could be added without the need to modify the bot core.
 ### Current State
 The current features already implemented are:
-* Easy way to add new commands: Just extend the provided abstract class, place your command in a specific folder and restart the bot. The command loader will detect the command received from discord (using a prefix, i.e. `,mycmd`) and will try to load a class with that name in the custom folder (i.e. `Commands\Custom\MycmdCommand`). For an easy example checkout the class `Commands\Custom\EchoCommand` or check `Commands\System\QodCommand` for a more complex example.
+* Easy way to add new commands: Just extend the provided abstract class, place your command in a specific folder and restart the bot. The command loader will detect the command received from discord (using a prefix, i.e. `,mycmd`) and will try to load a class with that name in the custom folder (i.e. `Commands\Custom\MycmdCommand`). Having a Custom command will override a System command of the same name. For an easy example checkout the class `Commands\Custom\EchoCommand` or check `Commands\System\QodCommand` for a more complex example.
 * Support for passing of parameters from discord to the custom commands (i.e. `,mycmd param1 param2`).
 * Support for custom commands with a three-stage loading phase: prepare(), run() and cleanup() to allow for more custom implementation of commands.
 * Access to the high level discord-php api.
