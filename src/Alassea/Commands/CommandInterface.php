@@ -2,6 +2,8 @@
 
 namespace Alassea\Commands;
 
+use Psr\Log\LoggerInterface;
+
 interface CommandInterface {
 	public function prepare($params);
 	public function run($params);
@@ -14,4 +16,6 @@ interface CommandInterface {
 	public function getDiscord();
 	public function setMessage($message);
 	public function getMessage();
+	public function setLogger(LoggerInterface $logger);
+	public function getLogger(): LoggerInterface;
 }
