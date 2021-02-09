@@ -117,7 +117,7 @@ class Alassea {
 			] );
 			try {
 				$commandInstance = null;
-				if (in_array ( $cmd, $this->commands )) {
+				if (in_array ( $cmd, array_keys ( $this->commands ) )) {
 					$this->logger->debug ( "Command Found in Memory! Executing: " . $commandClass );
 					$commandInstance = $this->commands [$cmd];
 				} else if (class_exists ( $commandClass )) {
