@@ -41,9 +41,9 @@ class QodCommand extends AbstractCommand {
 		}
 		$message = $this->getMessage ();
 		$message->channel->sendMessage ( "{$message->author}, {$text}", false, $embed )->then ( function (Message $message) {
-			echo '\nMessage sent!' . PHP_EOL;
+			$this->getLogger ()->debug ( "QodCommand: QoD sent!" );
 		} )->otherwise ( function (\Exception $e) {
-			echo '\nError sending message: ' . $e->getMessage () . PHP_EOL;
+			$this->getLogger ()->error ( 'QodCommand: Error sending message: ' . $e->getMessage () );
 		} );
 	}
 	public function prepare($params) {
@@ -59,14 +59,14 @@ class QodCommand extends AbstractCommand {
 		$key = date ( "Y-m-d" ) . $this->category;
 		return $this->getBot ()->getCache ()->get ( $key, function ($myQod) use ($key) {
 			if ($myQod == null) {
-				echo "Fetching new QoD";
+				$this->getLogger ()->info ( "QodCommand: Cache miss for key " . $key . "!, Fetching new QoD" );
 				$contents = file_get_contents ( $this->url );
 				$array = json_decode ( $contents, true );
 				if ($array != null) {
 					$myQod = $this->getBot ()->getCache ()->insert ( $key, $array, "qod" );
 				}
 			} else {
-				echo "Found QoD in chache!, returning";
+				$this->getLogger ()->debug ( "QodCommand: Key " . $key . " found in chache!, returning" );
 			}
 			return json_decode ( json_encode ( $myQod ) );
 		}, "qod" );

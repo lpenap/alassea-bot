@@ -36,9 +36,9 @@ class InfoCommand extends AbstractCommand {
 				"inline" => false
 		] ) );
 		$this->getMessage ()->channel->sendMessage ( "", false, $embed )->then ( function (Message $message) {
-			echo 'Message sent!' . PHP_EOL;
+			$this->getLogger ()->debug ( "InfoCommand: Info sent!" );
 		} )->otherwise ( function (\Exception $e) {
-			echo 'Error sending message: ' . $e->getMessage () . PHP_EOL;
+			$this->getLogger ()->error ( 'InfoCommand: Error sending message: ' . $e->getMessage () );
 		} );
 	}
 }

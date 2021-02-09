@@ -2,11 +2,14 @@
 
 namespace Alassea\Commands;
 
+use Psr\Log\LoggerInterface;
+
 abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
 	protected $message;
 	protected $params;
 	protected $bot;
+	protected $logger;
 	public function prepare($params) {
 	}
 	public function cleanup() {
@@ -34,5 +37,11 @@ abstract class AbstractCommand implements CommandInterface {
 	}
 	public function setParams($params) {
 		$this->params = $params;
+	}
+	public function setLogger(LoggerInterface $logger) {
+		$this->logger = $logger;
+	}
+	public function getLogger(): LoggerInterface {
+		return $this->logger;
 	}
 }
