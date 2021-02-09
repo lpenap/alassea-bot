@@ -89,4 +89,7 @@ class QodCommand extends AbstractCommand {
 		);
 		return $asJsonObj ? json_decode ( json_encode ( $quote ) ) : $quote;
 	}
+	public function getHelpText() {
+		return 'Prints quote of the day for the given category from theysaidso.com';
+	}
 }

@@ -11,4 +11,7 @@ class RestartCommand extends AbstractCommand {
 			$this->getBot ()->restart ();
 		} );
 	}
+	public function getHelpText() {
+		return "Restart the bot";
+	}
 }

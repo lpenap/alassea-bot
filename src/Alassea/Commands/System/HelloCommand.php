@@ -8,4 +8,7 @@ class HelloCommand extends AbstractCommand {
 	public function run($params) {
 		$this->getMessage ()->reply ( 'hello! I\'m Alassea, the friendly bot!' );
 	}
+	public function getHelpText() {
+		return "Replies with a hello message";
+	}
 }

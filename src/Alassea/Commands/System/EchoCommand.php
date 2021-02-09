@@ -12,4 +12,8 @@ class EchoCommand extends AbstractCommand {
 	public function prepare($params) {
 		$this->str = implode ( ", ", $params );
 	}
+	public function getHelpText() {
+		return "Replies with the received text";
+	}
+
 }

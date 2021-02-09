@@ -22,6 +22,7 @@ class Alassea {
 	protected $basedir;
 	protected $logLevel;
 	protected $logger;
+	protected $commands;
 	public function __construct($prefs) {
 		$this->setPrefs ( $prefs );
 		$this->logger = new Monolog ( 'DiscordPHP' );
@@ -32,6 +33,7 @@ class Alassea {
 		$this->cmdPaths [] = 'Alassea\\Commands\\System\\';
 
 		$this->cache = new Cache ( "cache", $this->basedir );
+		$this->readCommands ();
 		$this->startTime = time ();
 	}
 	protected function setPrefs($prefs) {
@@ -114,28 +116,45 @@ class Alassea {
 					"params" => implode ( ",", $params )
 			] );
 			try {
-				if (class_exists ( $commandClass )) {
-					$this->logger->debug ( "Command Found! Executing: " . $commandClass );
+				$commandInstance = null;
+				if (in_array ( $cmd, $this->commands )) {
+					$this->logger->debug ( "Command Found in Memory! Executing: " . $commandClass );
+					$commandInstance = $this->commands [$cmd];
+				} else if (class_exists ( $commandClass )) {
+					$this->logger->debug ( "Command Found in Disk! Executing: " . $commandClass );
 					$commandInstance = new $commandClass ();
-					$commandInstance->setParams ( $params );
-					$commandInstance->setBot ( $this );
-					$commandInstance->setDiscord ( $discord );
-					$commandInstance->setMessage ( $message );
-					$commandInstance->setLogger ( $this->logger );
-					$commandInstance->prepare ( $params );
-					$commandInstance->run ( $params );
-					$commandInstance->cleanup ();
-					$executed = true;
+					$this->commands [$cmd] = $commandInstance;
+				}
+				$this->runCommandInstance ( $commandInstance, $discord, $message, $params, $executed );
+				if ($commandInstance !== null) {
 					return;
 				}
 			} catch ( \Exception $e ) {
 				$this->logger->error ( 'Error processing command (' . $cmd . '): ' . $e->getMessage () );
 			}
 		}
+
 		if (! $executed) {
 			$this->logger->warning ( "Unknown command " . $cmd );
 			$message->reply ( "Oops!, i don't know that command, (RTFM?)" );
 		}
+	}
+	private function runCommandInstance($commandInstance, $discord, $message, $params, &$executed) {
+		if ($commandInstance !== null) {
+			$commandInstance->setParams ( $params );
+			$commandInstance->setBot ( $this );
+			$commandInstance->setDiscord ( $discord );
+			$commandInstance->setMessage ( $message );
+			$commandInstance->setLogger ( $this->logger );
+			$commandInstance->prepare ( $params );
+			$commandInstance->run ( $params );
+			$commandInstance->cleanup ();
+			$executed = true;
+		}
+	}
+	private function readCommands() {
+		// TODO find a way to read all available commands to save disk IO.
+		$this->commands = [ ];
 	}
 	public function getRestartCount() {
 		return $this->restartCount;

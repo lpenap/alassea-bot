@@ -25,4 +25,7 @@ class EchoCommand extends AbstractCommand {
 	public function cleanup() {
 		// cleanup after running
 	}
+	public function getHelpText() {
+		return "Replies with the received text";
+	}
 }

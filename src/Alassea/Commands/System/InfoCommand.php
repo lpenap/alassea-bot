@@ -41,4 +41,7 @@ class InfoCommand extends AbstractCommand {
 			$this->getLogger ()->error ( 'InfoCommand: Error sending message: ' . $e->getMessage () );
 		} );
 	}
+	public function getHelpText() {
+		return "Prints bot information";
+	}
 }
