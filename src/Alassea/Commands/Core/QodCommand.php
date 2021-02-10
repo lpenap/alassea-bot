@@ -1,6 +1,6 @@
 <?php
 
-namespace Alassea\Commands\System;
+namespace Alassea\Commands\Core;
 
 use Alassea\Commands\AbstractCommand;
 use Discord\Parts\Channel\Message;
@@ -11,7 +11,7 @@ class QodCommand extends AbstractCommand {
 	protected $url = 'https://quotes.rest/qod.json?category=';
 	protected $defaultCategory = 'funny';
 	protected $category = null;
-	public function run($params) {
+	public function run(array $params): void {
 		$text = null;
 		$qodResponse = $this->getQod ();
 		$embed = null;
@@ -46,16 +46,17 @@ class QodCommand extends AbstractCommand {
 			$this->getLogger ()->error ( 'QodCommand: Error sending message: ' . $e->getMessage () );
 		} );
 	}
-	public function prepare($params) {
-		if (isset ( $params [0] )) {
+	public function prepare(array $params): void {
+		if (isset ( $params [0] ) && $params [0] != "") {
 			$this->category = strtolower ( $params [0] );
 			$this->url .= $this->category;
 		} else {
 			$this->url .= $this->defaultCategory;
 			$this->category = $this->defaultCategory;
 		}
+		$this->getLogger ()->debug ( "QodCommand: setting qod url to " . $this->url );
 	}
-	public function getQod() {
+	protected function getQod() {
 		$key = date ( "Y-m-d" ) . $this->category;
 		return $this->getBot ()->getCache ()->get ( $key, function ($myQod) use ($key) {
 			if ($myQod == null) {
@@ -71,7 +72,7 @@ class QodCommand extends AbstractCommand {
 			return json_decode ( json_encode ( $myQod ) );
 		}, "qod" );
 	}
-	private function getDefaultQuote($asJsonObj = true) {
+	protected function getDefaultQuote($asJsonObj = true) {
 		$quote = array (
 				'contents' => array (
 						'quotes' => array (
@@ -89,7 +90,7 @@ class QodCommand extends AbstractCommand {
 		);
 		return $asJsonObj ? json_decode ( json_encode ( $quote ) ) : $quote;
 	}
-	public function getHelpText() {
+	public function getHelpText(): string {
 		return 'Prints quote of the day for the given category from theysaidso.com';
 	}
 }

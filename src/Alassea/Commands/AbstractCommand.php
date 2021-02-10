@@ -3,6 +3,9 @@
 namespace Alassea\Commands;
 
 use Psr\Log\LoggerInterface;
+use Alassea\Alassea;
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
 
 abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
@@ -10,32 +13,32 @@ abstract class AbstractCommand implements CommandInterface {
 	protected $params;
 	protected $bot;
 	protected $logger;
-	public function prepare($params) {
+	public function prepare(array $params): void {
 	}
-	public function cleanup() {
+	public function cleanup(): void {
 	}
-	public function setBot($bot) {
+	public function setBot(Alassea $bot) {
 		$this->bot = $bot;
 	}
-	public function setDiscord($discord) {
+	public function setDiscord(Discord $discord) {
 		$this->discord = $discord;
 	}
-	public function getBot() {
+	public function getBot(): Alassea {
 		return $this->bot;
 	}
-	public function getMessage() {
+	public function getMessage(): Message {
 		return $this->message;
 	}
-	public function getDiscord() {
+	public function getDiscord(): Discord {
 		return $this->discord;
 	}
-	public function setMessage($message) {
+	public function setMessage(Message $message) {
 		$this->message = $message;
 	}
-	public function getParams() {
+	public function getParams(): array {
 		return $this->params;
 	}
-	public function setParams($params) {
+	public function setParams(array $params) {
 		$this->params = $params;
 	}
 	public function setLogger(LoggerInterface $logger) {

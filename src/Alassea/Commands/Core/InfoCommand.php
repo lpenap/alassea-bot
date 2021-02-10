@@ -1,6 +1,6 @@
 <?php
 
-namespace Alassea\Commands\System;
+namespace Alassea\Commands\Core;
 
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -10,7 +10,7 @@ use Alassea\Commands\AbstractCommand;
 use Alassea\Utils\DateTimeUtils;
 
 class InfoCommand extends AbstractCommand {
-	public function run($params) {
+	public function run(array $params): void {
 		$embed = $this->getDiscord ()->factory ( Embed::class, [ 
 				"title" => "AlasseaBot Info",
 				"color" => '#0099ff'
@@ -41,7 +41,7 @@ class InfoCommand extends AbstractCommand {
 			$this->getLogger ()->error ( 'InfoCommand: Error sending message: ' . $e->getMessage () );
 		} );
 	}
-	public function getHelpText() {
+	public function getHelpText(): string {
 		return "Prints bot information";
 	}
 }

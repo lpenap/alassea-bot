@@ -7,6 +7,7 @@ use Alassea\Database\Cache;
 use Monolog\Logger as Monolog;
 use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
+use Alassea\Commands\CommandInterface;
 
 class Alassea {
 	public const VERSION = "0.4";
@@ -23,6 +24,7 @@ class Alassea {
 	protected $logLevel;
 	protected $logger;
 	protected $commands;
+	protected $commandsHelp;
 	public function __construct($prefs) {
 		$this->setPrefs ( $prefs );
 		$this->logger = new Monolog ( 'DiscordPHP' );
@@ -30,6 +32,7 @@ class Alassea {
 
 		$this->cmdPaths = array ();
 		$this->cmdPaths [] = $this::CUSTOM_CMD_NAMESPACE;
+		$this->cmdPaths [] = 'Alassea\\Commands\\Core\\';
 		$this->cmdPaths [] = 'Alassea\\Commands\\System\\';
 
 		$this->cache = new Cache ( "cache", $this->basedir );
@@ -123,9 +126,9 @@ class Alassea {
 				} else if (class_exists ( $commandClass )) {
 					$this->logger->debug ( "Command Found in Disk! Executing: " . $commandClass );
 					$commandInstance = new $commandClass ();
-					$this->commands [$cmd] = $commandInstance;
+					$this->addCommandToCache ( $cmd, $commandInstance );
 				}
-				$this->runCommandInstance ( $commandInstance, $discord, $message, $params, $executed );
+				$this->runCommandLifecycle ( $commandInstance, $discord, $message, $params, $executed );
 				if ($commandInstance !== null) {
 					return;
 				}
@@ -139,7 +142,11 @@ class Alassea {
 			$message->reply ( "Oops!, i don't know that command, (RTFM?)" );
 		}
 	}
-	private function runCommandInstance($commandInstance, $discord, $message, $params, &$executed) {
+	private function addCommandToCache($cmd, CommandInterface $commandInstance) {
+		$this->commands [$cmd] = $commandInstance;
+		$this->commandsHelp [$cmd] = $commandInstance->getHelpText ();
+	}
+	private function runCommandLifecycle($commandInstance, $discord, $message, $params, &$executed) {
 		if ($commandInstance !== null) {
 			$commandInstance->setParams ( $params );
 			$commandInstance->setBot ( $this );
@@ -155,6 +162,10 @@ class Alassea {
 	private function readCommands() {
 		// TODO find a way to read all available commands to save disk IO.
 		$this->commands = [ ];
+		$this->commandsHelp = [ ];
+	}
+	public function getCommandsHelp() {
+		return $this->commandsHelp;
 	}
 	public function getRestartCount() {
 		return $this->restartCount;

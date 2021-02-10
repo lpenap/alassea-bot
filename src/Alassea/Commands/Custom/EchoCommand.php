@@ -6,7 +6,7 @@ use Alassea\Commands\AbstractCommand;
 
 class EchoCommand extends AbstractCommand {
 	protected $str;
-	public function run($params) {
+	public function run(array $params): void {
 		// command execution
 		$this->getMessage ()->reply ( 'Echo!!! : ' . $this->str );
 
@@ -16,16 +16,17 @@ class EchoCommand extends AbstractCommand {
 	 * $this->getMesssage() : Gets the current Message obj.
 	 * $this->getBot() : Gets reference to Alassea Bot.
 	 * $this->getParams() : Gets the params array.
+	 * $this->getLogger() : Gets the system logger (Psr\Log\LoggerInterface)
 	 */
 	}
-	public function prepare($params) {
+	public function prepare(array $params): void {
 		// preparing command execution
 		$this->str = implode ( " ", $params );
 	}
-	public function cleanup() {
+	public function cleanup(): void {
 		// cleanup after running
 	}
-	public function getHelpText() {
+	public function getHelpText(): string {
 		return "Replies with the received text";
 	}
 }
