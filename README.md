@@ -83,8 +83,8 @@ The current features already implemented are:
 
 #### ToDo
 * Implement a first time command cache reading all commands in command namespaces (Custom, Core, System). This is to limit disk IO operations and for the Help command to get all help texts from the memory cache.
-* Restrict commands by a sort-of `admin` role (so only admins could restart the bot for example).
 * Add out of the box support for custom auto reaction roles.
+* Add a basic dice rolling system.
 
 <!-- GETTING STARTED -->
 ## Getting Started
