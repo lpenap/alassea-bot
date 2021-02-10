@@ -63,22 +63,28 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 AlasseaBot is an early attempt to provide an extensible general purpose discord bot that could be managed through commands. It can be extensible in the sense that new commands could be added without the need to modify the bot core.
+
 ### Current State
 The current features already implemented are:
-* Easy way to add new commands: Just extend the provided abstract class, place your command in a specific folder and restart the bot. The command loader will detect the command received from discord (using a prefix, i.e. `,mycmd`) and will try to load a class with that name in the custom folder (i.e. `Commands\Custom\MycmdCommand`). For an easy example checkout the class `Commands\Custom\EchoCommand` or check `Commands\System\QodCommand` for a more complex example.
+* Easy way to add new commands: Just extend the provided abstract class, place your command in a specific folder and restart the bot. The command loader will detect the command received from discord (using a prefix, i.e. `,mycmd`) and will try to load a class with that name in the custom folder (i.e. `Commands\Custom\MycmdCommand`). Having a Custom command will override a Core and System command of the same name. For an easy example checkout the class `Commands\Custom\EchoCommand` or check `Commands\Core\QodCommand` for a more complex example.
 * Support for passing of parameters from discord to the custom commands (i.e. `,mycmd param1 param2`).
 * Support for custom commands with a three-stage loading phase: prepare(), run() and cleanup() to allow for more custom implementation of commands.
 * Access to the high level discord-php api.
-* A native php and light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\System\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested.
+* A native php and light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\Core\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested.
+* System admin configuration (through discord user ids, see `src/alassea-bot.php` for configuration options).
+
 #### Commands list
-* `,restart` : Will restart the bot on-the-fly (it will load new code added to it). It is not necesary to restart the bot after adding new commands, it will load them dinamically.
+* `,restart` : Will restart the bot on-the-fly (it will load new code added to it). It is not necesary to restart the bot after adding new commands, it will load them dinamically but once they are loaded you will need to restart the bot again if the command changed (because there is an internal command cache to save on disk IO).
 * `,hello` : Basic hello (world?) command.
 * `,echo` : Commad that will reply back with the received parameters.
 * `,info` : Prints an embed with some info from the bot (i.e. versions).
-* `,qod` : Quote of the day command to retrieve qod using the free `quotes.rest` API
+* `,qod` : Quote of the day command to retrieve qod using the free `quotes.rest` API.
+* `,help` : Print help information of commands in cache.
+
 #### ToDo
-* Restrict commands by a sort-of `admin` role (so only admins could restart the bot for example).
+* Implement a first time command cache reading all commands in command namespaces (Custom, Core, System). This is to limit disk IO operations and for the Help command to get all help texts from the memory cache.
 * Add out of the box support for custom auto reaction roles.
+* Add a basic dice rolling system.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -87,7 +93,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-* composer: Install composer on your system (if you don't have it already). (Maybe I should add a `composer.phar` to the project
+* composer: Install composer on your system (if you don't have it already). (Maybe I should add a `composer.phar` to the project?)
 * Add/create a configuration for a new App/Bot in Discord: https://discord.com/developers/applications . (you will need a valid bot token to configure AlasseaBot)
 * Create an environment variable called `ALASSEA_DISCORD_TOKEN` with your discord bot token. AlasseaBot will take the required token from there.
 
@@ -101,6 +107,7 @@ To get a local copy up and running follow these simple steps.
    ```sh
    composer install
    ```
+3. Check additional configuration in `src/alassea-bot.php`
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -109,11 +116,10 @@ Run from the cli and from the project folder (This is important since the restar
 php src/alassea-bot.php 0
 ```
 
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Any contributions you make are **greatly appreciated**. Contribution can be in the form of a new core functionality or new custom commands that could make its way to become system commands.
+Any contributions you make are **greatly appreciated**. Contribution can be in the form of a new core functionality or new custom commands that could make its way to become core or system commands.
 
 The project is currently using Eclipse PHP Convention (built in) and not the Zend or psr-2 convention (this is because this convention is similar to conventions from other language I regularly use. I can be convinced otherwise with a good argument... maybe.)
 
@@ -123,14 +129,10 @@ The project is currently using Eclipse PHP Convention (built in) and not the Zen
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-
-
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-
 
 <!-- CONTACT -->
 ## Contact
