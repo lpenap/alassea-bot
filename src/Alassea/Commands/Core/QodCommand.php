@@ -8,13 +8,15 @@ use Discord\Parts\Embed\Embed;
 use Alassea\Database\Cache;
 
 class QodCommand extends AbstractCommand {
-	protected $url = 'https://quotes.rest/qod.json?category=';
-	protected $defaultCategory = 'funny';
+	protected $url = null;
 	protected $category = null;
+	protected const DEFAULT_CATEGORY = 'funny';
+	protected const DEFAULT_URL = 'https://quotes.rest/qod.json?category=';
 	public function run(array $params): void {
 		$text = null;
 		$qodResponse = $this->getQod ();
 		$embed = null;
+		$this->getLogger ()->debug ( "QodCommand: getQod", json_decode ( json_encode ( $qodResponse ), true ) );
 
 		if (isset ( $qodResponse->contents->quotes [0] )) {
 			$text = 'Here is your \'' . $qodResponse->contents->quotes [0]->title . '\'';
@@ -24,8 +26,8 @@ class QodCommand extends AbstractCommand {
 		}
 		$quote = $qodResponse->contents->quotes [0];
 		$embed = $this->getDiscord ()->factory ( Embed::class, [ 
-				"title" => $quote->quote,
-				"description" => 'Tags: ' . implode ( ", ", $quote->tags ),
+				"title" => " ",
+				"description" => $quote->quote,
 				'color' => '#0099ff',
 				"thumbnail" => [ 
 						"url" => $quote->background,
@@ -39,6 +41,7 @@ class QodCommand extends AbstractCommand {
 		if (isset ( $qodResponse->copyright )) {
 			$embed->setFooter ( 'They Said So(R), ' . $qodResponse->copyright->url, 'https://theysaidso.com/branding/theysaidso.png' );
 		}
+		$this->getLogger ()->debug ( "QodCommand: Sending embed", json_decode ( json_encode ( $embed ), true ) );
 		$message = $this->getMessage ();
 		$message->channel->sendMessage ( "{$message->author}, {$text}", false, $embed )->then ( function (Message $message) {
 			$this->getLogger ()->debug ( "QodCommand: QoD sent!" );
@@ -49,11 +52,10 @@ class QodCommand extends AbstractCommand {
 	public function prepare(array $params): void {
 		if (isset ( $params [0] ) && $params [0] != "") {
 			$this->category = strtolower ( $params [0] );
-			$this->url .= $this->category;
 		} else {
-			$this->url .= $this->defaultCategory;
-			$this->category = $this->defaultCategory;
+			$this->category = QodCommand::DEFAULT_CATEGORY;
 		}
+		$this->url = QodCommand::DEFAULT_URL . $this->category;
 		$this->getLogger ()->debug ( "QodCommand: setting qod url to " . $this->url );
 	}
 	protected function getQod() {
