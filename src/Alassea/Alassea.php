@@ -8,6 +8,7 @@ use Monolog\Logger as Monolog;
 use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 use Alassea\Commands\CommandInterface;
+use Discord\Parts\Channel\Message;
 
 class Alassea {
 	public const VERSION = "0.4";
@@ -25,15 +26,18 @@ class Alassea {
 	protected $logger;
 	protected $commands;
 	protected $commandsHelp;
+	protected $sysadmins;
+	protected const SYSADMIN_CMD_NAMESPACE = 'Alassea\\Commands\\System\\';
+	protected const CORE_CMD_NAMESPACE = 'Alassea\\Commands\\Core\\';
 	public function __construct($prefs) {
 		$this->setPrefs ( $prefs );
 		$this->logger = new Monolog ( 'DiscordPHP' );
 		$this->logger->pushHandler ( new StreamHandler ( 'php://stdout', $this->logLevel ) );
 
 		$this->cmdPaths = array ();
-		$this->cmdPaths [] = $this::CUSTOM_CMD_NAMESPACE;
-		$this->cmdPaths [] = 'Alassea\\Commands\\Core\\';
-		$this->cmdPaths [] = 'Alassea\\Commands\\System\\';
+		$this->cmdPaths [] = Alassea::CUSTOM_CMD_NAMESPACE;
+		$this->cmdPaths [] = Alassea::CORE_CMD_NAMESPACE;
+		$this->cmdPaths [] = Alassea::SYSADMIN_CMD_NAMESPACE;
 
 		$this->cache = new Cache ( "cache", $this->basedir );
 		$this->readCommands ();
@@ -70,10 +74,16 @@ class Alassea {
 			$this->basedir = __DIR__;
 		}
 
-		if (isset ( $prefs ['logLevel'] )) {
-			$this->logLevel = $prefs ['logLevel'];
+		if (isset ( $prefs ['log_level'] )) {
+			$this->logLevel = $prefs ['log_level'];
 		} else {
 			$this->logLevel = Monolog::INFO;
+		}
+
+		if (isset ( $prefs ['sysadmins'] ) && trim ( $prefs ['sysadmins'] ) != "") {
+			$this->sysadmins = explode ( ",", preg_replace ( "/\s+/", "", $prefs ['sysadmins'] ) );
+		} else {
+			$this->sysadmins = [ ];
 		}
 	}
 	public function restart() {
@@ -128,7 +138,7 @@ class Alassea {
 					$commandInstance = new $commandClass ();
 					$this->addCommandToCache ( $cmd, $commandInstance );
 				}
-				$this->runCommandLifecycle ( $commandInstance, $discord, $message, $params, $executed );
+				$this->runCommandLifecycle ( $commandInstance, $path, $discord, $message, $params, $executed );
 				if ($commandInstance !== null) {
 					return;
 				}
@@ -146,7 +156,11 @@ class Alassea {
 		$this->commands [$cmd] = $commandInstance;
 		$this->commandsHelp [$cmd] = $commandInstance->getHelpText ();
 	}
-	private function runCommandLifecycle($commandInstance, $discord, $message, $params, &$executed) {
+	private function runCommandLifecycle($commandInstance, $path, $discord, Message $message, $params, &$executed) {
+		if ($path == Alassea::SYSADMIN_CMD_NAMESPACE && ! in_array ( $message->author->id, $this->sysadmins )) {
+			$this->logger->debug ( "Author is not a System admin, skipping command execution, id:" . $message->author->id );
+			return;
+		}
 		if ($commandInstance !== null) {
 			$commandInstance->setParams ( $params );
 			$commandInstance->setBot ( $this );
