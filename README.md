@@ -71,7 +71,7 @@ The current features already implemented are:
 * Access to the high level discord-php api.
 * A native php and light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\Core\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested.
 #### Commands list
-* `,restart` : Will restart the bot on-the-fly (it will load new code added to it). It is not necesary to restart the bot after adding new commands, it will load them dinamically.
+* `,restart` : Will restart the bot on-the-fly (it will load new code added to it). It is not necesary to restart the bot after adding new commands, it will load them dinamically but once they are loaded you will need to restart the bot again if the command changed (because there is an internal command cache to save on disk IO).
 * `,hello` : Basic hello (world?) command.
 * `,echo` : Commad that will reply back with the received parameters.
 * `,info` : Prints an embed with some info from the bot (i.e. versions).
