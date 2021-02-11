@@ -9,7 +9,8 @@
     "require": {
         "team-reflex/discord-php": "^5.1",
         "php": "^7.4",
-		"rakibtg/sleekdb": "^2.1"
+		"rakibtg/sleekdb": "^2.1",
+		"porthou/dicebag": "^0.1.0"
     },
 	"autoload" : {
 		"psr-4" : {

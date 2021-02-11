@@ -11,7 +11,7 @@ use Alassea\Commands\CommandInterface;
 use Discord\Parts\Channel\Message;
 
 class Alassea {
-	public const VERSION = "0.4";
+	public const VERSION = "0.5";
 	protected const CUSTOM_CMD_NAMESPACE = 'Alassea\\Commands\\Custom\\';
 	protected const CUSTOM_CMD_SUFIX = 'Command';
 	protected $restartCount;

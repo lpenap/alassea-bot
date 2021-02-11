@@ -16,7 +16,8 @@ class EchoCommand extends AbstractCommand {
 	 * $this->getMesssage() : Gets the current Message obj.
 	 * $this->getBot() : Gets reference to Alassea Bot.
 	 * $this->getParams() : Gets the params array.
-	 * $this->getLogger() : Gets the system logger (Psr\Log\LoggerInterface)
+	 * $this->getLogger() : Gets the system logger (Psr\Log\LoggerInterface).
+	 * $this->sendMessageSimple(string $text, Embed $embed = null) : Function for easy message sending.
 	 */
 	}
 	public function prepare(array $params): void {

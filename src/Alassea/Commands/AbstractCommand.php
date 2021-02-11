@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 use Alassea\Alassea;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Embed\Embed;
 
 abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
@@ -46,5 +47,12 @@ abstract class AbstractCommand implements CommandInterface {
 	}
 	public function getLogger(): LoggerInterface {
 		return $this->logger;
+	}
+	public function sendMessageSimple(string $text, Embed $embed = null) {
+		$this->getMessage ()->channel->sendMessage ( $text, false, $embed )->then ( function (Message $message) {
+			$this->getLogger ()->debug ( "AbstractCommand: sendMessageSimple: sent!" );
+		} )->otherwise ( function (\Exception $e) {
+			$this->getLogger ()->error ( 'AbstractCommand: sendMessageSimple: Error sending message!: ' . $e->getMessage () );
+		} );
 	}
 }

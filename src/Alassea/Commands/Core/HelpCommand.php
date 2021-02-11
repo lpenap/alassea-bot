@@ -2,10 +2,9 @@
 
 namespace Alassea\Commands\Core;
 
-use Discord\Parts\Channel\Message;
+use Alassea\Commands\AbstractCommand;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Field;
-use Alassea\Commands\AbstractCommand;
 
 class HelpCommand extends AbstractCommand {
 	public function run(array $params): void {
@@ -20,11 +19,12 @@ class HelpCommand extends AbstractCommand {
 					"inline" => false
 			] ) );
 		}
-		$this->getMessage ()->channel->sendMessage ( "", false, $embed )->then ( function (Message $message) {
-			$this->getLogger ()->debug ( "HelpCommand: Help info sent!" );
-		} )->otherwise ( function (\Exception $e) {
-			$this->getLogger ()->error ( 'HelpCommand: Error sending message: ' . $e->getMessage () );
-		} );
+		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+				"name" => "More Info",
+				"value" => 'https://github.com/lpenap/alassea-bot',
+				"inline" => false
+		] ) );
+		$this->sendMessageSimple ( "", $embed );
 	}
 	public function getHelpText(): string {
 		return "Prints help information";

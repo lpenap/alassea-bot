@@ -80,11 +80,11 @@ The current features already implemented are:
 * `,info` : Prints an embed with some info from the bot (i.e. versions).
 * `,qod` : Quote of the day command to retrieve qod using the free `quotes.rest` API.
 * `,help` : Print help information of commands in cache.
+* `,roll` : Rolls a dice pool using standard dice notaction. see [DiceBag](https://github.com/AnthonyPorthouse/DiceBag) for documentation and examples.
 
 #### ToDo
 * Implement a first time command cache reading all commands in command namespaces (Custom, Core, System). This is to limit disk IO operations and for the Help command to get all help texts from the memory cache.
 * Add out of the box support for custom auto reaction roles.
-* Add a basic dice rolling system.
 
 <!-- GETTING STARTED -->
 ## Getting Started

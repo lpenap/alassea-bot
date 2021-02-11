@@ -2,12 +2,11 @@
 
 namespace Alassea\Commands\Core;
 
-use Discord\Discord;
-use Discord\Parts\Channel\Message;
-use Discord\Parts\Embed\Embed;
-use Discord\Parts\Embed\Field;
 use Alassea\Commands\AbstractCommand;
 use Alassea\Utils\DateTimeUtils;
+use Discord\Discord;
+use Discord\Parts\Embed\Embed;
+use Discord\Parts\Embed\Field;
 
 class InfoCommand extends AbstractCommand {
 	public function run(array $params): void {
@@ -35,11 +34,12 @@ class InfoCommand extends AbstractCommand {
 				"value" => DateTimeUtils::getTimeAgo ( $this->getBot ()->getUptime () ),
 				"inline" => false
 		] ) );
-		$this->getMessage ()->channel->sendMessage ( "", false, $embed )->then ( function (Message $message) {
-			$this->getLogger ()->debug ( "InfoCommand: Info sent!" );
-		} )->otherwise ( function (\Exception $e) {
-			$this->getLogger ()->error ( 'InfoCommand: Error sending message: ' . $e->getMessage () );
-		} );
+		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+				"name" => "Project Home",
+				"value" => 'https://github.com/lpenap/alassea-bot',
+				"inline" => false
+		] ) );
+		$this->sendMessageSimple ( "", $embed );
 	}
 	public function getHelpText(): string {
 		return "Prints bot information";

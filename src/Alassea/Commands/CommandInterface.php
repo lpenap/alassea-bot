@@ -22,4 +22,5 @@ interface CommandInterface {
 	public function setLogger(LoggerInterface $logger);
 	public function getLogger(): LoggerInterface;
 	public function getHelpText(): string;
+	public function sendMessageSimple(string $text);
 }
