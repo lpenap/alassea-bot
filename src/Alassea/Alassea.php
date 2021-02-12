@@ -9,9 +9,14 @@ use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 use Alassea\Commands\CommandInterface;
 use Discord\Parts\Channel\Message;
+use Discord\WebSockets\Event;
+use Discord\Parts\User\Member;
+use Alassea\Events\GuildMemberAddEventHandler;
+use Alassea\Events\GuildMemberRemoveEventHandler;
+use Alassea\Events\ReadyEventHandler;
 
 class Alassea {
-	public const VERSION = "0.5";
+	public const VERSION = "0.6";
 	protected const CUSTOM_CMD_NAMESPACE = 'Alassea\\Commands\\Custom\\';
 	protected const CUSTOM_CMD_SUFIX = 'Command';
 	protected $restartCount;
@@ -95,30 +100,34 @@ class Alassea {
 	}
 	public function run() {
 		$this->discord = new Discord ( [ 
-				'token' => $this->token
+				'token' => $this->token,
+				'loadAllMembers' => true
 		] );
-
-		$this->discord->on ( 'ready', function ($discord) {
-			$this->logger->info ( "AlasseaBot is ready! ", [ 
-					"times" => $this->restartCount
-			] );
-		} );
-
+		$this->setupEventHandlers ();
+		$this->discord->run ();
+	}
+	protected function setupEventHandlers() {
 		// Listen for messages.
-		$bot = $this;
-		$this->discord->on ( 'message', function ($message, $discord) use ($bot) {
-			if ($message->content !== "" && $message->content [0] == $bot->prefix) {
+		$this->discord->on ( Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
+			if ($message->content !== "" && $message->content [0] == $this->prefix) {
 				$this->logger->debug ( "Message received: ", [ 
 						"author" => $message->author->username,
 						"msg" => $message->content
 				] );
 				$content = preg_replace ( "/\s+/", " ", strtolower ( $message->content ) );
 				$params = explode ( " ", $content );
-				$cmd = ltrim ( array_shift ( $params ), $bot->prefix );
-				$bot->executeCommand ( $cmd, $params, $discord, $message );
+				$cmd = ltrim ( array_shift ( $params ), $this->prefix );
+				$this->executeCommand ( $cmd, $params, $discord, $message );
 			}
 		} );
-		$this->discord->run ();
+		$handlers = array (
+				'ready' => new ReadyEventHandler (),
+				Event::GUILD_MEMBER_ADD => new GuildMemberAddEventHandler (),
+				Event::GUILD_MEMBER_REMOVE => new GuildMemberRemoveEventHandler ()
+		);
+		foreach ( $handlers as $event => $handler ) {
+			$handler->setup ( $event, $this->discord, $this );
+		}
 	}
 	protected function executeCommand($cmd, $params, $discord, $message) {
 		$executed = false;
