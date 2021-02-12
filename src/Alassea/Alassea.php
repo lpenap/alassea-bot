@@ -14,6 +14,7 @@ use Discord\Parts\User\Member;
 use Alassea\Events\GuildMemberAddEventHandler;
 use Alassea\Events\GuildMemberRemoveEventHandler;
 use Alassea\Events\ReadyEventHandler;
+use Alassea\Events\MessageCreateEventHandler;
 
 class Alassea {
 	public const VERSION = "0.6";
@@ -108,20 +109,21 @@ class Alassea {
 	}
 	protected function setupEventHandlers() {
 		// Listen for messages.
-		$this->discord->on ( Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
-			if ($message->content !== "" && $message->content [0] == $this->prefix) {
-				$this->logger->debug ( "Message received: ", [ 
-						"author" => $message->author->username,
-						"msg" => $message->content
-				] );
-				$content = preg_replace ( "/\s+/", " ", strtolower ( $message->content ) );
-				$params = explode ( " ", $content );
-				$cmd = ltrim ( array_shift ( $params ), $this->prefix );
-				$this->executeCommand ( $cmd, $params, $discord, $message );
-			}
-		} );
+// 		$this->discord->on ( Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
+// 			if ($message->content !== "" && $message->content [0] == $this->prefix) {
+// 				$this->logger->debug ( "Message received: ", [ 
+// 						"author" => $message->author->username,
+// 						"msg" => $message->content
+// 				] );
+// 				$content = preg_replace ( "/\s+/", " ", strtolower ( $message->content ) );
+// 				$params = explode ( " ", $content );
+// 				$cmd = ltrim ( array_shift ( $params ), $this->prefix );
+// 				$this->executeCommand ( $cmd, $params, $discord, $message );
+// 			}
+// 		} );
 		$handlers = array (
 				'ready' => new ReadyEventHandler (),
+				Event::MESSAGE_CREATE => new MessageCreateEventHandler(),
 				Event::GUILD_MEMBER_ADD => new GuildMemberAddEventHandler (),
 				Event::GUILD_MEMBER_REMOVE => new GuildMemberRemoveEventHandler ()
 		);
@@ -129,7 +131,7 @@ class Alassea {
 			$handler->setup ( $event, $this->discord, $this );
 		}
 	}
-	protected function executeCommand($cmd, $params, $discord, $message) {
+	public function executeCommand($cmd, $params, $message) {
 		$executed = false;
 		foreach ( $this->cmdPaths as $path ) {
 			$commandClass = $path . ucfirst ( $cmd ) . $this::CUSTOM_CMD_SUFIX;
@@ -147,7 +149,7 @@ class Alassea {
 					$commandInstance = new $commandClass ();
 					$this->addCommandToCache ( $cmd, $commandInstance );
 				}
-				$this->runCommandLifecycle ( $commandInstance, $path, $discord, $message, $params, $executed );
+				$this->runCommandLifecycle ( $commandInstance, $path, $message, $params, $executed );
 				if ($commandInstance !== null) {
 					return;
 				}
@@ -165,7 +167,7 @@ class Alassea {
 		$this->commands [$cmd] = $commandInstance;
 		$this->commandsHelp [$cmd] = $commandInstance->getHelpText ();
 	}
-	private function runCommandLifecycle($commandInstance, $path, $discord, Message $message, $params, &$executed) {
+	private function runCommandLifecycle($commandInstance, $path, Message $message, $params, &$executed) {
 		if ($path == Alassea::SYSADMIN_CMD_NAMESPACE && ! in_array ( $message->author->id, $this->sysadmins )) {
 			$this->logger->debug ( "Author is not a System admin, skipping command execution, id:" . $message->author->id );
 			return;
@@ -173,7 +175,7 @@ class Alassea {
 		if ($commandInstance !== null) {
 			$commandInstance->setParams ( $params );
 			$commandInstance->setBot ( $this );
-			$commandInstance->setDiscord ( $discord );
+			$commandInstance->setDiscord ( $this->discord );
 			$commandInstance->setMessage ( $message );
 			$commandInstance->setLogger ( $this->logger );
 			$commandInstance->prepare ( $params );
@@ -204,5 +206,8 @@ class Alassea {
 	}
 	public function getLogger(): LoggerInterface {
 		return $this->logger;
+	}
+	public function getPrefix() {
+		return $this->prefix;
 	}
 }
