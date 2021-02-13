@@ -38,9 +38,9 @@ class Preferences {
 			$this->prefs [$key] = $val;
 		}
 		if (isset ( $prefs ['sysadmins'] ) && trim ( $prefs ['sysadmins'] ) != "") {
-			$this->sysadmins = explode ( ",", preg_replace ( "/\s+/", "", $prefs ['sysadmins'] ) );
+			$this->prefs ['sysadmins'] = explode ( ",", preg_replace ( "/\s+/", "", $prefs ['sysadmins'] ) );
 		} else {
-			$this->sysadmins = [ ];
+			$this->prefs ['sysadmins'] = [ ];
 		}
 	}
 	public function get($key) {

@@ -41,7 +41,6 @@ class QodCommand extends AbstractCommand {
 		if (isset ( $qodResponse->copyright )) {
 			$embed->setFooter ( 'They Said So(R), ' . $qodResponse->copyright->url, 'https://theysaidso.com/branding/theysaidso.png' );
 		}
-		$this->getLogger ()->debug ( "QodCommand: Sending embed", json_decode ( json_encode ( $embed ), true ) );
 		$message = $this->getMessage ();
 		$message->channel->sendMessage ( "{$message->author}, {$text}", false, $embed )->then ( function (Message $message) {
 			$this->getLogger ()->debug ( "QodCommand: QoD sent!" );
