@@ -6,10 +6,13 @@ use Monolog\Logger as Monolog;
 
 class Preferences {
 	public const VERSION = "0.6";
-	public const CUSTOM_CMD_NAMESPACE = 'Alassea\\Commands\\Custom\\';
-	public const CORE_CMD_NAMESPACE = 'Alassea\\Commands\\Core\\';
-	public const GUILDADMIN_CMD_NAMESPACE = 'Alassea\\Commands\\GuildAdmin\\';
-	public const SYSADMIN_CMD_NAMESPACE = 'Alassea\\Commands\\System\\';
+	// Namespaces must be relative to Alassea\\Commands root namespace
+	// which is where the CommandManager is located.
+	// Also, do not include the trailing \\ in the relative namespace.
+	public const CUSTOM_CMD_NAMESPACE = 'Custom';
+	public const CORE_CMD_NAMESPACE = 'Core';
+	public const GUILDADMIN_CMD_NAMESPACE = 'GuildAdmin';
+	public const SYSADMIN_CMD_NAMESPACE = 'System';
 	public const CUSTOM_CMD_SUFIX = 'Command';
 	protected $prefs;
 	function __construct() {
