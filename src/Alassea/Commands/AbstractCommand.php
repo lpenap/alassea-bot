@@ -49,10 +49,10 @@ abstract class AbstractCommand implements CommandInterface {
 		return $this->logger;
 	}
 	public function sendMessageSimple(string $text, Embed $embed = null) {
-		$this->getMessage ()->channel->sendMessage ( $text, false, $embed )->then ( function (Message $message) {
-			$this->getLogger ()->debug ( "AbstractCommand: sendMessageSimple: sent!" );
+		$this->message->channel->sendMessage ( $text, false, $embed )->then ( function (Message $message) {
+			$this->logger->debug ( "AbstractCommand: sendMessageSimple: sent!" );
 		} )->otherwise ( function (\Exception $e) {
-			$this->getLogger ()->error ( 'AbstractCommand: sendMessageSimple: Error sending message!: ' . $e->getMessage () );
+			$this->logger->error ( 'AbstractCommand: sendMessageSimple: Error sending message!: ' . $e->getMessage () );
 		} );
 	}
 }

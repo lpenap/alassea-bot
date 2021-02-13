@@ -83,8 +83,10 @@ The current features already implemented are:
 * `,roll` : Rolls a dice pool using standard dice notaction. see [DiceBag](https://github.com/AnthonyPorthouse/DiceBag) for documentation and examples.
 
 #### ToDo
-* Implement a first time command cache reading all commands in command namespaces (Custom, Core, System). This is to limit disk IO operations and for the Help command to get all help texts from the memory cache.
+* Add configuration for welcoming new guild members.
 * Add out of the box support for custom auto reaction roles.
+* Restrict help command output depending on user permissions: Sysadmin will see system commands, guild admins will see guildamin commands, etc
+* Make a list of required bot permissions for the discord invite link.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -94,8 +96,9 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 * composer: Install composer on your system (if you don't have it already). (Maybe I should add a `composer.phar` to the project?)
-* Add/create a configuration for a new App/Bot in Discord: https://discord.com/developers/applications . (you will need a valid bot token to configure AlasseaBot)
+* Add/create a configuration for a new App/Bot in Discord: https://discord.com/developers/applications . (you will need a valid bot token to configure AlasseaBot). Remember to check the `bot` scope in oauth2 section, and toggle the presence and server member intents in the bot section.
 * Create an environment variable called `ALASSEA_DISCORD_TOKEN` with your discord bot token. AlasseaBot will take the required token from there.
+* Optionally create the `ALASSEA_DISCORD_SYSADMINS` environment variable with a comma separated list of Discord IDs  (Ids are **not** the username#xxxx combination but the actual discord id) who will be able to access the Sysadmin commands (like restart)
 
 ### Installation
 

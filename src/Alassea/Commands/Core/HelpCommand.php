@@ -5,6 +5,7 @@ namespace Alassea\Commands\Core;
 use Alassea\Commands\AbstractCommand;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Field;
+use Alassea\Commands\CommandManager;
 
 class HelpCommand extends AbstractCommand {
 	public function run(array $params): void {
@@ -12,7 +13,8 @@ class HelpCommand extends AbstractCommand {
 				"title" => "AlasseaBot Help",
 				"color" => '#0099ff'
 		], true );
-		foreach ( $this->getBot ()->getCommandsHelp () as $cmd => $helpText ) {
+		$cmdHelp = (CommandManager::instance ())->getCommandsHelp ();
+		foreach ( $cmdHelp as $cmd => $helpText ) {
 			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
 					"name" => $cmd,
 					"value" => $helpText,

@@ -7,6 +7,7 @@ use Alassea\Utils\DateTimeUtils;
 use Discord\Discord;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Field;
+use Alassea\Preferences;
 
 class InfoCommand extends AbstractCommand {
 	public function run(array $params): void {
@@ -16,7 +17,7 @@ class InfoCommand extends AbstractCommand {
 		], true );
 		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
 				"name" => "AlasseaBot",
-				"value" => $this->getBot ()::VERSION,
+				"value" => Preferences::VERSION,
 				"inline" => true
 		] ) );
 		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
