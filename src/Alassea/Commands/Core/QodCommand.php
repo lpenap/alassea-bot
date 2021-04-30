@@ -5,23 +5,24 @@ namespace Alassea\Commands\Core;
 use Alassea\Commands\AbstractCommand;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
-use Alassea\Database\Cache;
 
 class QodCommand extends AbstractCommand {
 	protected $url = null;
 	protected $category = null;
 	protected const DEFAULT_CATEGORY = 'funny';
 	protected const DEFAULT_URL = 'https://quotes.rest/qod.json?category=';
+	protected const DEFAULT_SERVICE_NAME = "quotes.rest";
 	public function run(array $params): void {
 		$text = null;
 		$qodResponse = $this->getQod ();
 		$embed = null;
-		$this->getLogger ()->debug ( "QodCommand: getQod", json_decode ( json_encode ( $qodResponse ), true ) );
+		$logResponse = json_decode ( json_encode ( $qodResponse ), true ) ?? array ();
+		$this->getLogger ()->debug ( "QodCommand: getQod", $logResponse );
 
 		if (isset ( $qodResponse->contents->quotes [0] )) {
 			$text = 'Here is your \'' . $qodResponse->contents->quotes [0]->title . '\'';
 		} else {
-			$text = 'Oops!, the qotd service is down (or the selected category doesn\'t exist)! Nevermind, here is my default quote!:';
+			$text = 'Oops!, the qotd service (at ' . self::DEFAULT_SERVICE_NAME . ') is down (or the selected category doesn\'t exist)! Nevermind, here is my default quote!:';
 			$qodResponse = $this->getDefaultQuote ();
 		}
 		$quote = $qodResponse->contents->quotes [0];

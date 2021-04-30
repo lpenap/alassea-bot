@@ -81,6 +81,7 @@ The current features already implemented are:
 * `,qod` : Quote of the day command to retrieve qod using the free `quotes.rest` API.
 * `,help` : Print help information of commands in cache.
 * `,roll` : Rolls a dice pool using standard dice notaction. see [DiceBag](https://github.com/AnthonyPorthouse/DiceBag) for documentation and examples.
+* `,weather` : Weather info for a given city name using the free `metaweather.com` API.
 
 #### ToDo
 * Add configuration for welcoming new guild members.
