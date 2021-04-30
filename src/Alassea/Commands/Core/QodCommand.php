@@ -5,7 +5,6 @@ namespace Alassea\Commands\Core;
 use Alassea\Commands\AbstractCommand;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
-use Alassea\Database\Cache;
 
 class QodCommand extends AbstractCommand {
 	protected $url = null;
