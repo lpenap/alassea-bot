@@ -15,7 +15,7 @@ class QodCommand extends AbstractCommand {
 		$text = null;
 		$qodResponse = $this->getQod ();
 		$embed = null;
-		$logResponse = json_decode ( json_encode ( $qodResponse ), true) ?? array();
+		$logResponse = json_decode ( json_encode ( $qodResponse ), true ) ?? array ();
 		$this->getLogger ()->debug ( "QodCommand: getQod", $logResponse );
 
 		if (isset ( $qodResponse->contents->quotes [0] )) {
