@@ -28,4 +28,17 @@ class DateTimeUtils {
 			}
 		}
 	}
+	public static function timeToEmoji($timestamp): string {
+		$h = date ( 'g', $timestamp );
+		$m = date ( 'i', $timestamp );
+		if ($m < 15) {
+			$m = "";
+		} else if ($m > 15 && $m < 45) {
+			$m = "30";
+		} else {
+			$m = "";
+			$h = $h ++ % 12;
+		}
+		return sprintf ( ':clock%s%s:', $h, $m );
+	}
 }
