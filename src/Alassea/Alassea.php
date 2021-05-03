@@ -25,7 +25,7 @@ class Alassea {
 		$this->setPrefs ( $prefs );
 		$this->logger = new Monolog ( 'AlasseaBot' );
 		$this->logger->pushHandler ( new StreamHandler ( 'php://stdout', $this->prefs->get ( 'log_level' ) ) );
-		$this->cache = new Cache ( "cache", $this->prefs->get ( 'basedir' ) );
+		$this->cache = new Cache ( "AlasseaBot_Global_cache", $this->prefs->get ( 'basedir' ) );
 		$this->startTime = time ();
 		$this->setupCommandManager ();
 	}
@@ -77,7 +77,7 @@ class Alassea {
 	public function getUptime() {
 		return $this->startTime;
 	}
-	public function getCache(): Cache {
+	public function getGlobalCache(): Cache {
 		return $this->cache;
 	}
 	public function getDiscord() {
