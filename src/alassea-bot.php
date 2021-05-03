@@ -4,6 +4,7 @@ include __DIR__ . '/../vendor/autoload.php';
 use Alassea\Alassea;
 use Monolog\Logger as Monolog;
 function launch() {
+	define ( 'ROOT_PATH', dirname ( __FILE__ ) );
 	$discordToken = getenv ( 'ALASSEA_DISCORD_TOKEN', true );
 	if ($discordToken === false) {
 		die ( "Please set ALASSEA_DISCORD_TOKEN environment variable" );
