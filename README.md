@@ -70,7 +70,7 @@ The current features already implemented are:
 * Support for passing of parameters from discord to the custom commands (i.e. `,mycmd param1 param2`).
 * Support for custom commands with a three-stage loading phase: prepare(), run() and cleanup() to allow for more custom implementation of commands.
 * Access to the high level discord-php api.
-* A native php and light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\Core\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested.
+* A native php and light NoSQL-like database facility available for your custom commands with an out of the box persistent cache. For an example on how to use this, check `Commands\Core\QodCommand` that makes use of its own cache context to store the `quote of the day` the first time is requested, or You can also check `Commands\Core\WeatherCommand` for info about how to use cache data with expiration.
 * System admin configuration (through discord user ids, see `src/alassea-bot.php` for configuration options).
 
 #### Commands list
@@ -78,10 +78,10 @@ The current features already implemented are:
 * `,hello` : Basic hello (world?) command.
 * `,echo` : Commad that will reply back with the received parameters.
 * `,info` : Prints an embed with some info from the bot (i.e. versions).
-* `,qod` : Quote of the day command to retrieve qod using the free `quotes.rest` API.
+* `,qod` : Quote of the day command to retrieve qod using the free `quotes.rest` API. Qods are cached for an entire day because of quotes.rest limits.
 * `,help` : Print help information of commands in cache.
 * `,roll` : Rolls a dice pool using standard dice notaction. see [DiceBag](https://github.com/AnthonyPorthouse/DiceBag) for documentation and examples.
-* `,weather` : Weather info for a given city name using the free `metaweather.com` API.
+* `,weather` : Weather info for a given city name using the free `metaweather.com` API. Weather info are cached for 5min for the requested location to comply with metaweather's request to use the API no more than once per minute.
 
 #### ToDo
 * Add configuration for welcoming new guild members.
