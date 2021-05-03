@@ -20,6 +20,7 @@ class WeatherCommand extends AbstractCommand {
 	protected const CACHE_KEY = 'metaweather';
 	protected const IMG_PREFIX = 'https://www.metaweather.com/static/img/weather/png/64/';
 	protected const IMG_SUFIX = '.png';
+	protected const TIME_FORMAT = 'Y-m-d \*\*G:i\*\*';
 	public function run(array $params): void {
 		$text = null;
 		$embed = null;
@@ -91,9 +92,11 @@ class WeatherCommand extends AbstractCommand {
 			 * https://www.metaweather.com/api/location/468739/
 			 */
 			$cur = $weather ['consolidated_weather'] [0];
+			$title = 'Weather in %s, %s';
+			$description = '** %s ** with ** %d%% ** humidity and ** %d km/h** winds.';
 			$embed = $this->getDiscord ()->factory ( Embed::class, [ 
-					"title" => round ( $cur ['the_temp'], 1 ) . '°C , ' . $cur ['weather_state_name'],
-					"description" => $weather ['title'] . ', ' . $weather ['parent'] ['title'],
+					"title" => sprintf ( $title, $weather ['title'], $weather ['parent'] ['title'] ),
+					"description" => sprintf ( $description, $cur ['weather_state_name'], $cur ['humidity'], round ( $cur ['wind_speed'] * 1.609, 2 ) ),
 					'color' => '#0099ff',
 					"thumbnail" => [ 
 							"url" => self::IMG_PREFIX . $cur ['weather_state_abbr'] . self::IMG_SUFIX,
@@ -101,14 +104,37 @@ class WeatherCommand extends AbstractCommand {
 							"width" => 20
 					]
 			], true );
+			$t = round ( $cur ['min_temp'], 1 );
 			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Min Temp",
-					"value" => round ( $cur ['min_temp'], 1 ) . "°C",
+					"name" => ":thermometer: Temp",
+					"value" => $t . "°C " . $this->tempToEmoji ( $t ),
+					"inline" => true
+			] ) );
+			$t = round ( $cur ['min_temp'], 1 );
+			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+					"name" => "Min",
+					"value" => $t . "°C " . $this->tempToEmoji ( $t ),
+					"inline" => true
+			] ) );
+			$t = round ( $cur ['max_temp'], 1 );
+			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+					"name" => "Max",
+					"value" => $t . "°C " . $this->tempToEmoji ( $t ),
 					"inline" => true
 			] ) );
 			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Max Temp",
-					"value" => round ( $cur ['max_temp'], 1 ) . "°C",
+					"name" => "Humidity",
+					"value" => $cur ['humidity'] . '%',
+					"inline" => true
+			] ) );
+			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+					"name" => "Visibility",
+					"value" => round ( $cur ['visibility'] * 1.609, 1 ) . ' Km',
+					"inline" => true
+			] ) );
+			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+					"name" => "Confidence",
+					"value" => $cur ['predictability'] . '%',
 					"inline" => true
 			] ) );
 			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
@@ -116,23 +142,42 @@ class WeatherCommand extends AbstractCommand {
 					"value" => $weather ['timezone'],
 					"inline" => false
 			] ) );
+			$t = (new \DateTime ( "now", new \DateTimeZone ( $weather ['timezone'] ) ))->getTimestamp ();
 			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => $weather ['timezone_name'] . " Time",
-					"value" => date ( 'l jS \of F Y h:i:s A', strtotime ( $weather ['time'] ) ),
-					"inline" => false
+					"name" => $this->timeToEmoji ( $t ) . ' ' . $weather ['timezone_name'] . " Time",
+					"value" => date ( self::TIME_FORMAT, $t ),
+					"inline" => true
 			] ) );
+			$t = strtotime ( $weather ['sun_rise'] );
 			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Sunrise",
-					"value" => date ( 'l jS \of F Y h:i:s A', strtotime ( $weather ['sun_rise'] ) ),
-					"inline" => false
+					"name" => $this->timeToEmoji ( $t ) . ' ' . "Sunrise",
+					"value" => date ( self::TIME_FORMAT, $t ),
+					"inline" => true
 			] ) );
+			$t = strtotime ( $weather ['sun_set'] );
 			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Sunset",
-					"value" => date ( 'l jS \of F Y h:i:s A', strtotime ( $weather ['sun_set'] ) ),
-					"inline" => false
+					"name" => $this->timeToEmoji ( $t ) . ' ' . "Sunset",
+					"value" => date ( self::TIME_FORMAT, $t ),
+					"inline" => true
 			] ) );
 		}
 		return $embed;
+	}
+	protected function tempToEmoji($temp): string {
+		return $temp < 10 ? ":cold_face:" : ($temp > 30 ? ":hot_face:" : "");
+	}
+	protected function timeToEmoji($timestamp): string {
+		$h = date ( 'g', $timestamp );
+		$m = date ( 'i', $timestamp );
+		if ($m < 15) {
+			$m = "";
+		} else if ($m > 15 && $m < 45) {
+			$m = "30";
+		} else {
+			$m = "";
+			$h = $h ++ % 12;
+		}
+		return sprintf ( ':clock%s%s:', $h, $m );
 	}
 	public function getHelpText(): string {
 		return 'Prints weather information for a given location from ' . self::DEFAULT_SERVICE_NAME;
