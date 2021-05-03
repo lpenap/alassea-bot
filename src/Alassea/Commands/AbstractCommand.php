@@ -8,6 +8,8 @@ use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
 use Discord\Parts\Embed\Field;
+use Alassea\Database\CacheInterface;
+use Alassea\Database\Cache;
 
 abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
@@ -15,6 +17,7 @@ abstract class AbstractCommand implements CommandInterface {
 	protected $params;
 	protected $bot;
 	protected $logger;
+	protected $cache = null;
 	public function prepare(array $params): void {
 	}
 	public function cleanup(): void {
@@ -62,5 +65,17 @@ abstract class AbstractCommand implements CommandInterface {
 				"value" => $fieldValue,
 				"inline" => $inline
 		] ) );
+	}
+	public function getCacheContextName(): string {
+		// TODO improve this
+		$parts = explode ( '\\', get_called_class () . "_cache" );
+		return array_pop ( $parts );
+	}
+	public function getCache(): CacheInterface {
+		$this->logger->debug ( "AbstractCommand: Using cache context: " . $this->getCacheContextName () );
+		if ($this->cache == null) {
+			$this->cache = new Cache ( $this->getCacheContextName () );
+		}
+		return $this->cache;
 	}
 }
