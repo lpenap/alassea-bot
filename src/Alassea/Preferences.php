@@ -5,7 +5,7 @@ namespace Alassea;
 use Monolog\Logger as Monolog;
 
 class Preferences {
-	public const VERSION = "0.6";
+	public const VERSION = "0.8";
 	// Namespaces must be relative to Alassea\\Commands root namespace
 	// which is where the CommandManager is located.
 	// Also, do not include the trailing \\ in the relative namespace.
@@ -25,7 +25,7 @@ class Preferences {
 				'token' => '',
 				'basedir' => __DIR__,
 				'log_level' => Monolog::INFO,
-				'load_all_members' => true,
+				'load_all_members' => false,
 				'sysadmins' => [ ],
 				'cmd_paths' => [ 
 						self::CUSTOM_CMD_NAMESPACE,
