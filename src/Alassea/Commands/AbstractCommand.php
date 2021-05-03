@@ -7,6 +7,9 @@ use Alassea\Alassea;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
+use Discord\Parts\Embed\Field;
+use Alassea\Database\CacheInterface;
+use Alassea\Database\Cache;
 
 abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
@@ -14,6 +17,7 @@ abstract class AbstractCommand implements CommandInterface {
 	protected $params;
 	protected $bot;
 	protected $logger;
+	protected $cache = null;
 	public function prepare(array $params): void {
 	}
 	public function cleanup(): void {
@@ -54,5 +58,24 @@ abstract class AbstractCommand implements CommandInterface {
 		} )->otherwise ( function (\Exception $e) {
 			$this->logger->error ( 'AbstractCommand: sendMessageSimple: Error sending message!: ' . $e->getMessage () );
 		} );
+	}
+	public function addField(Embed &$embed, string $fieldName, string $fieldValue, bool $inline) {
+		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+				"name" => $fieldName,
+				"value" => $fieldValue,
+				"inline" => $inline
+		] ) );
+	}
+	public function getCacheContextName(): string {
+		// TODO improve this
+		$parts = explode ( '\\', get_called_class () . "_cache" );
+		return array_pop ( $parts );
+	}
+	public function getCache(): CacheInterface {
+		$this->logger->debug ( "AbstractCommand: Using cache context: " . $this->getCacheContextName () );
+		if ($this->cache == null) {
+			$this->cache = new Cache ( $this->getCacheContextName () );
+		}
+		return $this->cache;
 	}
 }

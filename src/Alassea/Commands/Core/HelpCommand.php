@@ -3,9 +3,8 @@
 namespace Alassea\Commands\Core;
 
 use Alassea\Commands\AbstractCommand;
-use Discord\Parts\Embed\Embed;
-use Discord\Parts\Embed\Field;
 use Alassea\Commands\CommandManager;
+use Discord\Parts\Embed\Embed;
 
 class HelpCommand extends AbstractCommand {
 	public function run(array $params): void {
@@ -15,17 +14,9 @@ class HelpCommand extends AbstractCommand {
 		], true );
 		$cmdHelp = (CommandManager::instance ())->getCommandsHelp ();
 		foreach ( $cmdHelp as $cmd => $helpText ) {
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => $cmd,
-					"value" => $helpText,
-					"inline" => false
-			] ) );
+			$this->addField ( $embed, $cmd, $helpText, false );
 		}
-		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-				"name" => "More Info",
-				"value" => 'https://github.com/lpenap/alassea-bot',
-				"inline" => false
-		] ) );
+		$this->addField ( $embed, "More Info", 'https://github.com/lpenap/alassea-bot', false );
 		$this->sendMessageSimple ( "", $embed );
 	}
 	public function getHelpText(): string {

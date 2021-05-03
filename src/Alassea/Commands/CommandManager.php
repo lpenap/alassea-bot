@@ -3,10 +3,10 @@
 namespace Alassea\Commands;
 
 use Alassea\Alassea;
+use Alassea\Preferences;
+use Discord\Parts\Channel\Message;
 use Monolog\Logger as Monolog;
 use Monolog\Handler\StreamHandler;
-use Discord\Parts\Channel\Message;
-use Alassea\Preferences;
 
 class CommandManager {
 	private static $instances = [ ];
