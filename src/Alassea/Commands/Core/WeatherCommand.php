@@ -3,9 +3,9 @@
 namespace Alassea\Commands\Core;
 
 use Alassea\Commands\AbstractCommand;
+use Alassea\Utils\DateTimeUtils;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
-use Discord\Parts\Embed\Field;
 
 class WeatherCommand extends AbstractCommand {
 	protected $search = null;
@@ -21,6 +21,7 @@ class WeatherCommand extends AbstractCommand {
 	protected const IMG_PREFIX = 'https://www.metaweather.com/static/img/weather/png/64/';
 	protected const IMG_SUFIX = '.png';
 	protected const TIME_FORMAT = 'Y-m-d \*\*G:i\*\*';
+	protected const CACHE_TTL = 300; // 300 seconds = 5min
 	public function run(array $params): void {
 		$text = null;
 		$embed = null;
@@ -105,81 +106,28 @@ class WeatherCommand extends AbstractCommand {
 					]
 			], true );
 			$t = round ( $cur ['min_temp'], 1 );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => ":thermometer: Temp",
-					"value" => $t . "°C " . $this->tempToEmoji ( $t ),
-					"inline" => true
-			] ) );
+			$this->addField ( $embed, ":thermometer: Temp", $t . "°C " . $this->tempToEmoji ( $t ), true );
 			$t = round ( $cur ['min_temp'], 1 );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Min",
-					"value" => $t . "°C " . $this->tempToEmoji ( $t ),
-					"inline" => true
-			] ) );
+			$this->addField ( $embed, "Min", $t . "°C " . $this->tempToEmoji ( $t ), true );
 			$t = round ( $cur ['max_temp'], 1 );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Max",
-					"value" => $t . "°C " . $this->tempToEmoji ( $t ),
-					"inline" => true
-			] ) );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Humidity",
-					"value" => $cur ['humidity'] . '%',
-					"inline" => true
-			] ) );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Visibility",
-					"value" => round ( $cur ['visibility'] * 1.609, 1 ) . ' Km',
-					"inline" => true
-			] ) );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Confidence",
-					"value" => $cur ['predictability'] . '%',
-					"inline" => true
-			] ) );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => "Timezone",
-					"value" => $weather ['timezone'],
-					"inline" => false
-			] ) );
-			$t = (new \DateTime ( "now", new \DateTimeZone ( $weather ['timezone'] ) ))->getTimestamp ();
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => $this->timeToEmoji ( $t ) . ' ' . $weather ['timezone_name'] . " Time",
-					"value" => date ( self::TIME_FORMAT, $t ),
-					"inline" => true
-			] ) );
-			$t = strtotime ( $weather ['sun_rise'] );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => $this->timeToEmoji ( $t ) . ' ' . "Sunrise",
-					"value" => date ( self::TIME_FORMAT, $t ),
-					"inline" => true
-			] ) );
-			$t = strtotime ( $weather ['sun_set'] );
-			$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-					"name" => $this->timeToEmoji ( $t ) . ' ' . "Sunset",
-					"value" => date ( self::TIME_FORMAT, $t ),
-					"inline" => true
-			] ) );
+			$this->addField ( $embed, "Max", $t . "°C " . $this->tempToEmoji ( $t ), true );
+			$this->addField ( $embed, "Humidity", $cur ['humidity'] . '%', true );
+			$this->addField ( $embed, "Visibility", round ( $cur ['visibility'] * 1.609, 1 ) . ' Km', true );
+			$this->addField ( $embed, "Confidence", $cur ['predictability'] . '%', true );
+			$this->addField ( $embed, "Timezone", $weather ['timezone'], false );
+			$t = new \DateTime ( "now", new \DateTimeZone ( $weather ['timezone'] ) );
+			$this->addField ( $embed, DateTimeUtils::timeToEmoji ( $t->getTimestamp () ) . ' ' . $weather ['timezone_name'] . " Time", $t->format ( self::TIME_FORMAT ), true );
+			$t = new \DateTime ( $weather ['sun_rise'], new \DateTimeZone ( $weather ['timezone'] ) );
+			$this->addField ( $embed, DateTimeUtils::timeToEmoji ( $t->getTimestamp () ) . ' ' . "Sunrise", $t->format ( self::TIME_FORMAT ), true );
+			$t = new \DateTime ( $weather ['sun_set'], new \DateTimeZone ( $weather ['timezone'] ) );
+			$this->addField ( $embed, DateTimeUtils::timeToEmoji ( $t->getTimestamp () ) . ' ' . "Sunset", $t->format ( self::TIME_FORMAT ), true );
 		}
 		return $embed;
 	}
 	protected function tempToEmoji($temp): string {
 		return $temp < 10 ? ":cold_face:" : ($temp > 30 ? ":hot_face:" : "");
 	}
-	protected function timeToEmoji($timestamp): string {
-		$h = date ( 'g', $timestamp );
-		$m = date ( 'i', $timestamp );
-		if ($m < 15) {
-			$m = "";
-		} else if ($m > 15 && $m < 45) {
-			$m = "30";
-		} else {
-			$m = "";
-			$h = $h ++ % 12;
-		}
-		return sprintf ( ':clock%s%s:', $h, $m );
-	}
 	public function getHelpText(): string {
-		return 'Prints weather information for a given location from ' . self::DEFAULT_SERVICE_NAME;
+		return 'Prints weather information for a given location from ' . self::DEFAULT_SERVICE_NAME . ' (cached for ' . self::CACHE_TTL . ' seconds)';
 	}
 }
