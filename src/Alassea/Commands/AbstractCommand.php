@@ -7,6 +7,7 @@ use Alassea\Alassea;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
+use Discord\Parts\Embed\Field;
 
 abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
@@ -54,5 +55,12 @@ abstract class AbstractCommand implements CommandInterface {
 		} )->otherwise ( function (\Exception $e) {
 			$this->logger->error ( 'AbstractCommand: sendMessageSimple: Error sending message!: ' . $e->getMessage () );
 		} );
+	}
+	public function addField(Embed &$embed, string $fieldName, string $fieldValue, bool $inline) {
+		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
+				"name" => $fieldName,
+				"value" => $fieldValue,
+				"inline" => $inline
+		] ) );
 	}
 }

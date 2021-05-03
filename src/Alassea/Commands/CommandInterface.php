@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 use Alassea\Alassea;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
+use Discord\Parts\Embed\Embed;
 
 interface CommandInterface {
 	public function prepare(array $params): void;
@@ -23,4 +24,5 @@ interface CommandInterface {
 	public function getLogger(): LoggerInterface;
 	public function getHelpText(): string;
 	public function sendMessageSimple(string $text);
+	public function addField(Embed &$embed, string $fieldName, string $fieldValue, bool $inline);
 }
