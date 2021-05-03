@@ -2,12 +2,11 @@
 
 namespace Alassea\Commands\Core;
 
+use Alassea\Preferences;
 use Alassea\Commands\AbstractCommand;
 use Alassea\Utils\DateTimeUtils;
 use Discord\Discord;
 use Discord\Parts\Embed\Embed;
-use Discord\Parts\Embed\Field;
-use Alassea\Preferences;
 
 class InfoCommand extends AbstractCommand {
 	public function run(array $params): void {
@@ -15,31 +14,11 @@ class InfoCommand extends AbstractCommand {
 				"title" => "AlasseaBot Info",
 				"color" => '#0099ff'
 		], true );
-		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-				"name" => "AlasseaBot",
-				"value" => Preferences::VERSION,
-				"inline" => true
-		] ) );
-		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-				"name" => "Restarts",
-				"value" => $this->getBot ()->getRestartCount (),
-				"inline" => true
-		] ) );
-		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-				"name" => "Discord (Gateway/API/Client)",
-				"value" => Discord::GATEWAY_VERSION . ' / ' . Discord::HTTP_API_VERSION . ' / ' . Discord::VERSION,
-				"inline" => false
-		] ) );
-		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-				"name" => "Uptime",
-				"value" => DateTimeUtils::getTimeAgo ( $this->getBot ()->getUptime () ),
-				"inline" => false
-		] ) );
-		$embed->addField ( $this->getDiscord ()->factory ( Field::class, [ 
-				"name" => "Project Home",
-				"value" => 'https://github.com/lpenap/alassea-bot',
-				"inline" => false
-		] ) );
+		$this->addField ( $embed, "AlasseaBot", Preferences::VERSION, true );
+		$this->addField ( $embed, "Restarts", $this->getBot ()->getRestartCount (), true );
+		$this->addField ( $embed, "Uptime", DateTimeUtils::getTimeAgo ( $this->getBot ()->getUptime () ), true );
+		$this->addField ( $embed, "Discord Versions (Gateway/API/DiscordPHP)", Discord::GATEWAY_VERSION . ' / ' . Discord::HTTP_API_VERSION . ' / ' . Discord::VERSION, false );
+		$this->addField ( $embed, "Project Home", 'https://github.com/lpenap/alassea-bot', false );
 		$this->sendMessageSimple ( "", $embed );
 	}
 	public function getHelpText(): string {
