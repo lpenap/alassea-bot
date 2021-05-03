@@ -60,19 +60,19 @@ class QodCommand extends AbstractCommand {
 	}
 	protected function getQod() {
 		$key = date ( "Y-m-d" ) . $this->category;
-		return $this->getBot ()->getCache ()->get ( $key, function ($myQod) use ($key) {
+		return $this->getCache ()->getWithCallback ( $key, function ($myQod) use ($key) {
 			if ($myQod == null) {
 				$this->getLogger ()->info ( "QodCommand: Cache miss for key " . $key . "!, Fetching new QoD" );
 				$contents = file_get_contents ( $this->url );
 				$array = json_decode ( $contents, true );
 				if ($array != null) {
-					$myQod = $this->getBot ()->getCache ()->insert ( $key, $array, "qod" );
+					$myQod = $this->getCache ()->insert ( $key, $array );
 				}
 			} else {
 				$this->getLogger ()->debug ( "QodCommand: Key " . $key . " found in chache!, returning" );
 			}
 			return json_decode ( json_encode ( $myQod ) );
-		}, "qod" );
+		} );
 	}
 	protected function getDefaultQuote($asJsonObj = true) {
 		$quote = array (
