@@ -17,7 +17,6 @@ class WeatherCommand extends AbstractCommand {
 	protected const DEFAULT_SERVICE_LINKBACK = 'https://www.metaweather.com/';
 	protected const DEFAULT_SERVICE_ICON = 'https://www.metaweather.com/static/img/weather/png/64/lc.png';
 	protected const ENCODED_SPACE = '%20';
-	protected const CACHE_KEY = 'metaweather';
 	protected const IMG_PREFIX = 'https://www.metaweather.com/static/img/weather/png/64/';
 	protected const IMG_SUFIX = '.png';
 	protected const TIME_FORMAT = 'Y-m-d \*\*G:i\*\*';
@@ -58,34 +57,34 @@ class WeatherCommand extends AbstractCommand {
 		if (isset ( $params [0] ) && $params [0] != "") {
 			$searchLocation = strtolower ( implode ( self::ENCODED_SPACE, $params ) );
 			// get location from the cache or search for it
-			$this->getBot ()->getCache ()->get ( $searchLocation, function ($myLocations) use ($searchLocation) {
+			$this->getCache ()->getWithCallback ( '__location-' . $searchLocation, function ($myLocations) use ($searchLocation) {
 				if ($myLocations == null) {
 					$this->getLogger ()->debug ( "WeatherCommand: Cache miss for location '" . $searchLocation . "'!, making a new search" );
 					$locations = json_decode ( file_get_contents ( self::DEFAULT_URL_SEARCH . $searchLocation ), true );
 					if ($locations != null) {
-						$this->getBot ()->getCache ()->insert ( $searchLocation, $locations, self::CACHE_KEY );
+						$this->getCache ()->insert ( '__location-' . $searchLocation, $locations );
 						$this->locations = $locations;
 					}
 				} else {
 					$this->getLogger ()->debug ( "WeatherCommand: search '" . $searchLocation . "' found in chache!, returning" );
 					$this->locations = $myLocations;
 				}
-			}, self::CACHE_KEY );
+			} );
 		}
 	}
 	protected function getWeather($woeid) {
-		$weather = $this->getBot ()->getCache ()->getForToday ( '__woeid-' . $woeid, function ($data) use ($woeid) {
+		$weather = $this->getCache ()->getWithCallback ( '__woeid-' . $woeid, function ($data) use ($woeid) {
 			if ($data == null) {
 				$this->getLogger ()->debug ( "WeatherCommand: Cache miss for woeid '" . $woeid . "'!, fetching new data" );
 				$weather = json_decode ( file_get_contents ( self::DEFAULT_URL_LOCATION . $woeid ), true );
 				if ($weather != null) {
-					$data = $this->getBot ()->getCache ()->insert ( '__woeid-' . $woeid, $weather, self::CACHE_KEY );
+					$data = $this->getCache ()->insertWithTtl ( '__woeid-' . $woeid, $weather, self::CACHE_TTL );
 				}
 			} else {
 				$this->getLogger ()->debug ( "WeatherCommand: woeid '" . $woeid . "' found in chache!, returning" );
 			}
 			return $data;
-		}, true, self::CACHE_KEY );
+		} );
 		$embed = null;
 		if ($weather != null) {
 			/**
