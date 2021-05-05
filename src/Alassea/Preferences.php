@@ -5,7 +5,7 @@ namespace Alassea;
 use Monolog\Logger as Monolog;
 
 class Preferences {
-	public const VERSION = "0.10";
+	public const VERSION = "0.11";
 	// Namespaces must be relative to Alassea\\Commands root namespace
 	// which is where the CommandManager is located.
 	// Also, do not include the trailing \\ in the relative namespace.
