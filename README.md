@@ -82,6 +82,7 @@ The current features already implemented are:
 * `,help` : Print help information of commands in cache.
 * `,roll` : Rolls a dice pool using standard dice notaction. see [DiceBag](https://github.com/AnthonyPorthouse/DiceBag) for documentation and examples.
 * `,weather` : Weather info for a given city name using the free `metaweather.com` API. Weather info are cached for 5min for the requested location to comply with metaweather's request to use the API no more than once per minute.
+* `,rae` : Fetchs spanish word definitions from the RAE's diccionary.
 
 #### ToDo
 * Add configuration for welcoming new guild members.
