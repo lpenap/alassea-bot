@@ -5,6 +5,7 @@ namespace Alassea\Commands\Core;
 use Alassea\Commands\AbstractCommand;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Embed\Embed;
+use Campo\UserAgent;
 
 class RaeCommand extends AbstractCommand {
 	protected $definition = null;
@@ -84,7 +85,25 @@ class RaeCommand extends AbstractCommand {
 		}
 	}
 	protected function getUserAgent() {
-		return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.    93 Safari/537.36';
+		$ua = UserAgent::random ( [ 
+				'os_type' => [ 
+						'Windows',
+						'Linux',
+						'BSD',
+						'iOS',
+						'Android',
+						'OS X'
+				],
+				'agent_type' => 'Browser',
+				'agent_name' => [ 
+						'Firefox',
+						'Chrome',
+						'Chromium',
+						'Safari'
+				]
+		] );
+		$this->getLogger ()->debug ( "RaeCommand: Using user agent: " . $ua );
+		return $ua;
 	}
 	protected function fetchRaeDefinition($word) {
 		$definition = null;
