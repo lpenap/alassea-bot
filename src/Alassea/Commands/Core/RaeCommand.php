@@ -67,15 +67,17 @@ class RaeCommand extends AbstractCommand {
 			$word = $params [0];
 			if ($word != "") {
 				$this->word = $word;
-				$this->getCache ()->getWithCallback ( $word, function ($myDefinition) use ($word) {
-					if ($myDefinition == null) {
+				$this->getCache ()->getWithCallback ( $word, function ($myDefArray) use ($word) {
+					if ($myDefArray == null) {
 						$this->definition = $this->fetchRaeDefinition ( $word );
 						if ($this->definition != null) {
-							$this->getCache ()->insertWithTtl ( $word, $this->definition, self::CACHE_TTL );
+							$this->getCache ()->insertWithTtl ( $word, array (
+									$this->definition
+							), self::CACHE_TTL );
 						}
 					} else {
 						$this->getLogger ()->debug ( "RaeCommand: word '" . $word . "' found in chache!, returning" );
-						$this->definition = $myDefinition;
+						$this->definition = $myDefArray [0];
 					}
 				} );
 			}
@@ -92,7 +94,7 @@ class RaeCommand extends AbstractCommand {
 						'user_agent' => $this->getUserAgent ()
 				)
 		) );
-		$page = file_get_contents ( self::DEFAULT_URL . $word, $context );
+		$page = file_get_contents ( self::DEFAULT_URL . $word, false, $context );
 		$this->error = $page === false;
 		$startsAt = strpos ( $page, self::SEARCH_TAG_BEGIN ) + strlen ( self::SEARCH_TAG_BEGIN );
 		$endsAt = strpos ( $page, self::SEARCH_TAG_END, $startsAt );
