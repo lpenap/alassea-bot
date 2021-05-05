@@ -7,6 +7,6 @@ interface CacheInterface {
 	public function delete(string $key): void;
 	public function get(string $key): ?array;
 	public function getWithCallback(string $key, $callback);
-	public function insert($key, $arrayValue): ?array;
-	public function insertWithTtl($key, $arrayValue, $ttl): ?array;
+	public function insert($key, array $arrayValue): ?array;
+	public function insertWithTtl($key, array $arrayValue, $ttl): ?array;
 }
