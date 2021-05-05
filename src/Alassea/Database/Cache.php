@@ -46,10 +46,10 @@ class Cache implements CacheInterface {
 		}
 		return $cacheObj ['data'];
 	}
-	public function insert($key, $arrayValue): ?array {
+	public function insert($key, array $arrayValue): ?array {
 		return $this->insertWithTtl ( $key, $arrayValue, 0 );
 	}
-	public function insertWithTtl($key, $arrayValue, $ttl): ?array {
+	public function insertWithTtl($key, array $arrayValue, $ttl): ?array {
 		$cacheObj = array (
 				'key' => $key,
 				'timestamp' => time (),
