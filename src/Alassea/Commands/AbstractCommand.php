@@ -11,6 +11,16 @@ use Discord\Parts\Embed\Field;
 use Alassea\Database\CacheInterface;
 use Alassea\Database\Cache;
 
+/**
+ * Abstract class to be extended by all command classes.
+ *
+ * This class provides boilerplate code to command implementations
+ * in which they only need to implement the run() function, and in some cases,
+ * override prepare() and cleanup()
+ *
+ * @author luis
+ *        
+ */
 abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
 	protected $message;
@@ -18,8 +28,20 @@ abstract class AbstractCommand implements CommandInterface {
 	protected $bot;
 	protected $logger;
 	protected $cache = null;
+	/**
+	 * Optional function called on the first phase of command processing, overrided by subclasses.
+	 *
+	 * {@inheritdoc}
+	 * @see \Alassea\Commands\CommandInterface::prepare()
+	 */
 	public function prepare(array $params): void {
 	}
+	/**
+	 * Optional function called on the third phase of command processing, overrided by subclasses.
+	 *
+	 * {@inheritdoc}
+	 * @see \Alassea\Commands\CommandInterface::cleanup()
+	 */
 	public function cleanup(): void {
 	}
 	public function setBot(Alassea $bot) {
