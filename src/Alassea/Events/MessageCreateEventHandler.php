@@ -20,6 +20,7 @@ class MessageCreateEventHandler extends AbstractEventHandler {
 			$content = preg_replace ( "/\s+/", " ", strtolower ( $message->content ) );
 			$params = explode ( " ", $content );
 			$cmd = ltrim ( array_shift ( $params ), $prefix );
+			// TODO pass an empty params array if none are present and refactor all commands comparing params to null, yikes!
 			CommandManager::instance ()->executeCommand ( $cmd, $params, $message );
 		}
 	}
