@@ -33,7 +33,8 @@ class Preferences {
 						self::GUILDADMIN_CMD_NAMESPACE,
 						self::SYSADMIN_CMD_NAMESPACE
 				],
-				'cmd_suffix' => self::CUSTOM_CMD_SUFIX
+				'cmd_suffix' => self::CUSTOM_CMD_SUFIX,
+				'reply_on_wrong_command' => false
 		);
 	}
 	public function setAll(array $prefs) {

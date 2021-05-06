@@ -16,7 +16,8 @@ function launch() {
 			'token' => $discordToken,
 			'log_level' => Monolog::DEBUG, // defaults to INFO
 			'sysadmins' => getenv ( 'ALASSEA_DISCORD_SYSADMINS' ), // comma separated string with sysadmin ids, defaults to no admin
-			'load_all_members' => false // defaults to false, requires members intent in discord dev portal
+			'load_all_members' => false, // defaults to false, requires members intent in discord dev portal
+			'reply_on_wrong_command' => false, // defaults to false, replies when receiving a wrong command
 	] );
 	$bot->run ();
 }

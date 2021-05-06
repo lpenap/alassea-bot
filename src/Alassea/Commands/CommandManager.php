@@ -54,7 +54,9 @@ class CommandManager {
 			}
 		}
 		$this->logger->debug ( "Unknown command " . $cmd );
-		$message->reply ( "Oops!, i don't know that command, (RTFM?)" );
+		if ($this->bot->getPrefs()->get('reply_on_wrong_command')) {
+			$message->reply ( "Oops!, i don't know that command, try using `" .  $this->bot->getPrefs ()->get ( 'prefix' ) . 'help`');
+		}
 		return false;
 	}
 	protected function getClassName($path, $cmd) {
